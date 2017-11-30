@@ -23,11 +23,57 @@ module.exports = {
     Articles.create({
       title: req.body.title,
       body: req.body.body
-    }).exec(function(err){
-        if(err) {res.send(500,{error:"Database Error !"})}
-        res.redirect("/articles/list");
+    }).exec(function (err) {
+      if (err) {
+        res.send(500, {
+          error: "Database Error !"
+        })
+      }
+      res.redirect("/articles/list");
     });
+  },
+  delete: function (req, res) {
+    Articles.destroy({
+      id: req.params.id
+    }).exec(function (err) {
+      if (err) {
+        res.send(500, {
+          error: "Database Error!"
+        });
+      }
+      res.redirect("/articles/list");
+    });
+    return false;
+  },
+  edit: function (req, res) {
+    Articles.findOne({
+      id: req.params.id
+    }).exec(function (err, result) {
+      if (err) res.send(500, {
+        error: "Database Error !"
+      });
+      res.view("edit", {
+        article: result
+      });
+    });
+  },
+  update: function (req, res) {
+    var title = req.body.title;
+    var body = req.body.body;
+    Articles.update({
+      id: req.params.id
+    }, {
+      title: title,
+      body: body
+    }).exec(function (err) {
+      if (err) {
+        res.send(500, {
+          error: "Database Error !"
+        });
+      }
+      res.redirect("/articles/list");
+    });
+    return false;
   }
-
 
 };
